@@ -35,7 +35,6 @@ import torch.nn as nn
 from scipy.stats import truncnorm
 
 from openfold.utils.checkpointing import get_checkpoint_fn
-from openfold.utils.kernel.attention_core import attention_core
 from openfold.utils.precision_utils import is_fp16_enabled
 from openfold.utils.tensor_utils import (
     permute_final_dims,
@@ -515,13 +514,7 @@ class Attention(nn.Module):
             use_memory_efficient_kernel = False
         
         if use_memory_efficient_kernel:
-            if len(biases) > 2:
-                raise ValueError(
-                    "If use_memory_efficient_kernel is True, you may only "
-                    "provide up to two bias terms"
-                )
-            o = attention_core(q, k, v, *((biases + [None] * 2)[:2]))
-            o = o.transpose(-2, -3)
+            raise RuntimeError("memory-efficient kernel was deleted")
         elif use_deepspeed_evo_attention:
             if len(biases) > 2:
                 raise ValueError(
